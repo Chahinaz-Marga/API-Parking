@@ -3,7 +3,7 @@ import { Marker, Popup } from "react-leaflet";
 
 
 
-function Puntero({ lat, lng }) {
+function Pointer({ lat, lng }) {
   const [draggable, setDraggable] = useState(false);
   const [position, setPosition] = useState({ lat, lng });
   const markerRef = useRef(null);
@@ -40,4 +40,4 @@ function Puntero({ lat, lng }) {
   );
 }
 
-export default Puntero;
+export default Pointer;

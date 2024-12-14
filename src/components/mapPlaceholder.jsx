@@ -1,6 +1,7 @@
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import Puntero from './puntero';
+import Pointer from './pointer';
+import { useEffect } from 'react';
 
 function MapPlaceholder() {
   return (
@@ -11,11 +12,24 @@ function MapPlaceholder() {
   );
 }
 
+function AdjustMapBounds({ parkings }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (parkings.length > 0) {
+      const bounds = parkings.map((parking) => [parking.location.latitude, parking.location.longitude]);
+      map.fitBounds(bounds); // Ajusta el mapa a los límites calculados
+    }
+  }, [map, parkings]);
+  
+  return null;
+}
+
 function MapWithPlaceholder({ parkings }) {
   return (
     <MapContainer
       center={[40.4168, -3.7038]}
-      zoom={13}
+      zoom={15}
       scrollWheelZoom={false}
       placeholder={<MapPlaceholder />}
       className="leaflet-container">
@@ -23,12 +37,11 @@ function MapWithPlaceholder({ parkings }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-     
-      {parkings.map((parking) => <Puntero lat={parking.location.latitude} lng={parking.location.longitude} />)}
+      <AdjustMapBounds parkings={parkings} />
 
-      <Puntero lat={40.4168} lng={-3.7038}/> 
+      {parkings.map((parking) => <Pointer lat={parking.location.latitude} lng={parking.location.longitude} />)}
     </MapContainer>
   );
 }
-//en <MapConainer> hay que dibujar n punteros <Puntero>
+
 export default MapWithPlaceholder;

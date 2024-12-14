@@ -23,13 +23,14 @@ function ParkingList() {
     getParkings();
   }, []);
 
-  const handleSearch = (searchText) => {
-    const filtered = parkings.filter((parking) =>
-      parking.title.toLowerCase().includes(searchText.toLowerCase()) ||
-      parking.address.district['@id']
-        .toLowerCase()
-        .includes(searchText.toLowerCase())
-    );
+  const handleSearch = (searchTerm) => {
+    const lowercasedTerm = searchTerm.toLowerCase();
+    const filtered = parkings.filter((parking) => {
+      const titleMatch = parking.title?.toLowerCase().includes(lowercasedTerm) || false;
+      const addressMatch = parking.address?.['street-address']?.toLowerCase().includes(lowercasedTerm) || false;
+      const districtMatch = parking.address?.district?.['@id']?.split('/').pop().toLowerCase().includes(lowercasedTerm) || false;
+      return titleMatch || addressMatch || districtMatch;
+    });
     setFilteredParkings(filtered);
   };
 
