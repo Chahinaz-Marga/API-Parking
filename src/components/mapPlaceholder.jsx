@@ -1,5 +1,3 @@
-//import React from 'react';
-//import ReactDOM from 'react-dom/client';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Puntero from './puntero';
@@ -13,7 +11,7 @@ function MapPlaceholder() {
   );
 }
 
-function MapWithPlaceholder() {
+function MapWithPlaceholder({ parkings }) {
   return (
     <MapContainer
       center={[40.4168, -3.7038]}
@@ -25,12 +23,12 @@ function MapWithPlaceholder() {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Puntero/>
+     
+      {parkings.map((parking) => <Puntero lat={parking.location.latitude} lng={parking.location.longitude} />)}
+
+      <Puntero lat={40.4168} lng={-3.7038}/> 
     </MapContainer>
   );
 }
-
-//const root = ReactDOM.createRoot(document.getElementById('root'));
-//root.render(<MapWithPlaceholder />);
-
+//en <MapConainer> hay que dibujar n punteros <Puntero>
 export default MapWithPlaceholder;
