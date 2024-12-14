@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchParkings } from '../services/api';
 import SearchBar from './searchBar';
+import MapWithPlaceholder from './mapPlaceholder';
 
 function ParkingList() {
   const [parkings, setParkings] = useState([]);
@@ -37,23 +38,27 @@ function ParkingList() {
   }
 
   return (
-    <div className="container mt-4">
-      <h2>Listado de Aparcamientos</h2>
-      <SearchBar onSearch={handleSearch} />
-      {filteredParkings.length === 0 ? (
-        <p>No se encontraron resultados.</p>
-      ) : (
-        <ul className="list-group">
-          {filteredParkings.map((parking) => (
-            <li key={parking.id} className="list-group-item">
-              <strong>{parking.title}</strong>
-              <p>Dirección: {parking.address['street-address']}</p>
-              <p>Distrito: {parking.address.district['@id'].split('/').pop()}</p>
-              <p>Horario: {parking.organization.schedule || 'No disponible'}</p>
-            </li>
-          ))}
-        </ul>
-      )}
+    <div className="d-flex gap-1 container mt-4">
+      <div>
+        <h2>Listado de Aparcamientos</h2>
+        <SearchBar onSearch={handleSearch} />
+        {filteredParkings.length === 0 ? (
+          <p>No se encontraron resultados.</p>
+        ) : (
+          <ul className="list-group">
+            {filteredParkings.map((parking) => (
+              <li key={parking.id} className="list-group-item">
+                <strong>{parking.title}</strong>
+                <p>Dirección: {parking.address['street-address']}</p>
+                <p>Distrito: {parking.address.district['@id'].split('/').pop()}</p>
+                <p>Horario: {parking.organization.schedule || 'No disponible'}</p>
+              </li>
+            ))}
+          </ul>
+        )}                            
+      </div>
+      
+      <MapWithPlaceholder parkings={filteredParkings} />
     </div>
   );
 }

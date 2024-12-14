@@ -1,0 +1,9 @@
+#root {
+    height: 100vh; /*altura de la pantalla de visualización*/
+  }
+  
+  .leaflet-container {
+    width: 800px;
+    height: 400px; /* Cambia este valor según tus necesidades */
+  }
+  
