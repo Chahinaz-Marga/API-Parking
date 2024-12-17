@@ -25,7 +25,7 @@ function AdjustMapBounds({ parkings }) {
   return null;
 }
 
-function MapWithPlaceholder({ parkings }) {
+function MapWithPlaceholder({ parkings, onMarkerClick }) {
   return (
     <MapContainer
       center={[40.4168, -3.7038]}
