@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchParkings } from '../services/api';
 import SearchBar from './searchBar';
 import MapWithPlaceholder from './mapPlaceholder';
+import GoogleMapsLink from './googleMapsLink';
 
 function ParkingList() {
   const [parkings, setParkings] = useState([]);
@@ -53,6 +54,7 @@ function ParkingList() {
                 <p>Dirección: {parking.address['street-address']}</p>
                 <p>Distrito: {parking.address.district['@id'].split('/').pop()}</p>
                 <p>Horario: {parking.organization.schedule || 'No disponible'}</p>
+                <GoogleMapsLink parkings={parking.address["street-address"]} />
               </li>
             ))}
           </ul>
