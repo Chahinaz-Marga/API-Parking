@@ -35,6 +35,17 @@ function ParkingList() {
     setFilteredParkings(filtered);
   };
 
+  const handleMarkerClick = (selectedParking) => {
+    setFilteredParkings([selectedParking]); // Filtra solo el parking seleccionado
+  };
+
+  const filter24Hours = () => {
+    const filtered = parkings.filter((parking) =>
+      parking.organization?.schedule?.toLowerCase().includes('24 horas')
+    );
+    setFilteredParkings(filtered);
+  };
+
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
   }
@@ -44,6 +55,9 @@ function ParkingList() {
       <div>
         <h2>Listado de Aparcamientos</h2>
         <SearchBar onSearch={handleSearch} />
+        <button className="btn btn-primary mb-2" onClick={filter24Hours}>
+          Mostrar 24 Horas
+        </button>
         {filteredParkings.length === 0 ? (
           <p>No se encontraron resultados.</p>
         ) : (
@@ -60,8 +74,10 @@ function ParkingList() {
           </ul>
         )}                            
       </div>
-      
-      <MapWithPlaceholder parkings={filteredParkings} />
+      <MapWithPlaceholder 
+        parkings={filteredParkings} 
+        onMarkerClick={handleMarkerClick}  
+      />
     </div>
   );
 }

@@ -3,10 +3,11 @@ import { Marker, Popup } from "react-leaflet";
 
 
 
-function Pointer({ lat, lng }) {
+function Pointer({ lat, lng, name, onClick }) {
   const [draggable, setDraggable] = useState(false);
   const [position, setPosition] = useState({ lat, lng });
   const markerRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(false);
   const eventHandlers = useMemo(
     () => ({
       dragend() {
@@ -15,8 +16,17 @@ function Pointer({ lat, lng }) {
           setPosition(marker.getLatLng());
         }
       },
+      mouseover() {
+        setShowPopup(true);
+      },
+      mouseout() {
+        setShowPopup(false);
+      },
+      click() {
+        if (onClick) onClick();
+      },
     }),
-    []
+    [onClick]
   );
   const toggleDraggable = useCallback(() => {
     setDraggable((d) => !d);
@@ -29,13 +39,17 @@ function Pointer({ lat, lng }) {
       position={position}
       ref={markerRef}
     >
-      <Popup minWidth={90}>
-        <span onClick={toggleDraggable}>
+      {showPopup && (
+        <Popup autoClose={false} closeButton={false}>
+          <strong>{name}</strong>
+          <br />
+          <span onClick={toggleDraggable}>
           {draggable
             ? "Marker is draggable"
             : "Click here to make marker draggable"}
         </span>
-      </Popup>
+        </Popup>
+      )}
     </Marker>
   );
 }

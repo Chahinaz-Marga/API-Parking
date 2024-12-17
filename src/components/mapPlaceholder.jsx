@@ -18,7 +18,7 @@ function AdjustMapBounds({ parkings }) {
   useEffect(() => {
     if (parkings.length > 0) {
       const bounds = parkings.map((parking) => [parking.location.latitude, parking.location.longitude]);
-      map.fitBounds(bounds); // Ajusta el mapa a los límites calculados
+      map.fitBounds(bounds); 
     }
   }, [map, parkings]);
   
@@ -39,7 +39,15 @@ function MapWithPlaceholder({ parkings }) {
       />
       <AdjustMapBounds parkings={parkings} />
 
-      {parkings.map((parking) => <Pointer lat={parking.location.latitude} lng={parking.location.longitude} />)}
+      {parkings.map((parking) => (
+        <Pointer 
+          key={parking.id}
+          lat={parking.location.latitude} 
+          lng={parking.location.longitude} 
+          name={parking.title}
+          onClick={() => onMarkerClick(parking)}
+        />
+      ))}
     </MapContainer>
   );
 }
