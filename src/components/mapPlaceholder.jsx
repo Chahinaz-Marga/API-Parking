@@ -1,7 +1,9 @@
-import { MapContainer, TileLayer, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, GeoJSON } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Pointer from './pointer';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 
 function MapPlaceholder() {
   return (
@@ -25,7 +27,24 @@ function AdjustMapBounds({ parkings }) {
   return null;
 }
 
+
+
 function MapWithPlaceholder({ parkings, onMarkerClick }) {
+  const [zbeData, setZBEData] = useState(null);
+
+  useEffect(() => {
+    const fetchZBEData = async () => {
+      try {
+        const response = await axios.get('/zbe.json'); 
+        setZBEData(response.data); 
+      } catch (error) {
+        console.error('Error al cargar los datos de la ZBE:', error);
+      }
+    };
+
+    fetchZBEData();
+  }, []);
+
   return (
     <MapContainer
       center={[40.4168, -3.7038]}
@@ -48,6 +67,19 @@ function MapWithPlaceholder({ parkings, onMarkerClick }) {
           onClick={() => onMarkerClick(parking)}
         />
       ))}
+
+      {zbeData && (
+        <GeoJSON
+          data={zbeData}
+          style={{
+            color: 'red',
+            weight: 2,
+            fillColor: 'red',
+            fillOpacity: 0.2,
+          }}
+        />
+      )}
+
     </MapContainer>
   );
 }
