@@ -31,7 +31,7 @@ function AdjustMapBounds({ parkings }) {
 
 function MapWithPlaceholder({ parkings, onMarkerClick }) {
   const [zbeData, setZBEData] = useState(null);
-
+  
   useEffect(() => {
     const fetchZBEData = async () => {
       try {
@@ -51,7 +51,8 @@ function MapWithPlaceholder({ parkings, onMarkerClick }) {
       zoom={15}
       scrollWheelZoom={false}
       placeholder={<MapPlaceholder />}
-      className="leaflet-container">
+      className="leaflet-container"
+      >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
