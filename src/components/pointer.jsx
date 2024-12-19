@@ -26,7 +26,6 @@ return (
      <Tooltip >
         <strong>{name}</strong>
       </Tooltip>
-  
     </Marker>
   );
 }
