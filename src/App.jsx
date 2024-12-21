@@ -4,7 +4,7 @@ import Navbar from './components/navbar';
 import ParkingList from './components/parkingList';
 
 
-
+const x = import.meta.env.VITE_API_GOOGLE_KEY;
 
 function App() {
   return (

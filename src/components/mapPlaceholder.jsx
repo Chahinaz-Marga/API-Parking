@@ -3,6 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import Pointer from './pointer';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import RedPointer from './redPointer';
 
 
 function MapPlaceholder() {
@@ -68,6 +69,8 @@ function MapWithPlaceholder({ parkings, onMarkerClick }) {
           onClick={() => onMarkerClick(parking)}
         />
       ))}
+
+      <RedPointer lat={40.41} lng={-3.70} name={"Plaza Mayor"} />
 
       {zbeData && (
         <GeoJSON
