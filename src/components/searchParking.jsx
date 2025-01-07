@@ -59,11 +59,11 @@ function SearchParking({ query, onResults, onMarkersUpdate }) {
         const districtId = parking.address?.district?.['@id'] || '';
         const districtName = normalizeText(districtId.split('/').pop()) || '';
 
-        console.log(`Comparando:
-          Título: ${title}, 
-          Dirección: ${address}, 
-          Distrito: ${districtName}`
-        );
+        //console.log(`Comparando:
+        //  Título: ${title}, 
+        //  Dirección: ${address}, 
+        //  Distrito: ${districtName}`
+        //);
 
         // Verificar coincidencias parciales en los campos
         return (

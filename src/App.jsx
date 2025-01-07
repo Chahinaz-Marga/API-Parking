@@ -20,6 +20,8 @@ function App() {
   const [filteredResults, setFilteredResults] = useState([]); // Estado para resultados filtrados
   const [markers, setMarkers] = useState([]);
 
+  console.log (searchStage);
+
  
     const handleSearch = (searchQuery) => {
       if (searchQuery.trim()) { 
@@ -41,12 +43,15 @@ function App() {
     // handleParkingResults busca en el jason de parkins y si no hay resultado pasa al Places. 
     const handleParkingResults = (results) => {
       console.log('Resultados encontrados en parkingList.json:', results);
+
       if (results && results.length > 0) {
+        //si hay resultados en el json
         setParkingResults(results); // Persistir resultados en el estado
         setSearchStage('parking'); // Mantener búsqueda local
         console.log('Resultados locales encontrados. Mostrando en mapa.');
       } else {
-        console.warn('Sin resultados locales. Cambiando a Google Places.');
+        //si NO hay resultados en json busca en Places
+        console.log('Sin resultados locales. Cambiando a Google Places.');
         setSearchStage('places'); // Cambia a búsqueda en Google Places
       }
     };
@@ -71,14 +76,15 @@ function App() {
           {searchStage === 'parking' && (
             <SearchParking 
               query={query} 
-              onResults={setFilteredResults} 
+              onResults={handleParkingResults} 
               onMarkersUpdate={handleMarkersUpdate}
             />
           )}
           {searchStage === 'places' && (
             <SearchPlaces 
               query={query} 
-              onResult={handleGoogleResult}/>
+              onResult={handleGoogleResult}
+              />
           )}
         </div>
 

@@ -5,6 +5,8 @@ function SearchPlaces({ query, onResult }) {
   const [error, setError] = useState(null);
   const hasSearched = useRef(false); // Usamos una ref para evitar bucles
 
+  console.log('Búsqueda en Google Places activada con query:', query);
+
   // Inicializar Google Places API
   useEffect(() => {
     const loadService = () => {
@@ -45,6 +47,7 @@ function SearchPlaces({ query, onResult }) {
         };
         console.log('Resultado enviado:', result); // Depuración
         onResult(result);
+        console.log (result);
 
         // Marcar búsqueda como realizada
         hasSearched.current = true; // Cambiamos el estado solo aquí
