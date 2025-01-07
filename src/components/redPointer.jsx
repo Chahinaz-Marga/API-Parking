@@ -1,10 +1,9 @@
-import { useMemo, useRef, useState } from "react";
+import L from 'leaflet';
+import { useRef, useState } from "react";
 import { Marker, Tooltip } from "react-leaflet";
-import L from 'leaflet'; // Importamos Leaflet para personalizar el icono
 import 'leaflet/dist/leaflet.css';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.js';
-
 
 // Icono rojo personalizado
 const redIcon = new L.AwesomeMarkers.icon({
@@ -14,7 +13,7 @@ const redIcon = new L.AwesomeMarkers.icon({
 });
 
 function RedPointer({ lat, lng, name }) {
-  const [position, setPosition] = useState({ lat, lng });
+  const [position] = useState({ lat, lng });
   const markerRef = useRef(null);
 
   return (
@@ -31,4 +30,3 @@ function RedPointer({ lat, lng, name }) {
 }
 
 export default RedPointer;
-

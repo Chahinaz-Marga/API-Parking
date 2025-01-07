@@ -15,22 +15,24 @@ function MapPlaceholder() {
   );
 }
 
-function AdjustMapBounds({ parkings }) {
+function AdjustMapBounds({ parkings, googleResult }) {
   const map = useMap();
 
   useEffect(() => {
     if (parkings.length > 0) {
       const bounds = parkings.map((parking) => [parking.location.latitude, parking.location.longitude]);
       map.fitBounds(bounds); 
+    } else if (googleResult) {
+      map.setView([googleResult.lat, googleResult.lng], 15); // Vista para Google Places
     }
-  }, [map, parkings]);
+  }, [map, parkings, googleResult]);
+  
   
   return null;
 }
 
 
-
-function MapWithPlaceholder({ parkings, onMarkerClick }) {
+function MapWithPlaceholder({ parkings, googleResult, onMarkerClick }) {
   const [zbeData, setZBEData] = useState(null);
   
   useEffect(() => {
@@ -49,8 +51,8 @@ function MapWithPlaceholder({ parkings, onMarkerClick }) {
   return (
     <MapContainer
       center={[40.4168, -3.7038]}
-      zoom={15}
-      scrollWheelZoom={false}
+      zoom={13}
+      scrollWheelZoom={true}
       placeholder={<MapPlaceholder />}
       className="leaflet-container"
       >
@@ -58,19 +60,37 @@ function MapWithPlaceholder({ parkings, onMarkerClick }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <AdjustMapBounds parkings={parkings} />
+      <AdjustMapBounds parkings={parkings} googleResult={googleResult} />
 
-      {parkings.map((parking) => (
-        <Pointer 
-          key={parking.id}
-          lat={parking.location.latitude} 
-          lng={parking.location.longitude} 
-          name={parking.title}
-          onClick={() => onMarkerClick(parking)}
+      {parkings.map((parking) => {
+        // Validar que 'location', 'latitude' y 'longitude' existan
+        const lat = parking.location?.latitude; 
+        const lng = parking.location?.longitude;
+
+        if (!parking.location || typeof parking.location.latitude !== 'number' || typeof parking.location.longitude !== 'number') {
+          console.warn('Parking sin ubicación válida o coordenadas incorrectas:', parking);
+          return null;
+        }
+
+        return (
+          <Pointer 
+            key={parking.id}
+            lat={lat}
+            lng={lng}
+            name={parking.title}
+            onClick={() => onMarkerClick(parking)}
+          />
+        );
+      })}
+
+
+      {googleResult && googleResult.lat && googleResult.lng && (
+        <RedPointer 
+          lat={googleResult.lat} 
+          lng={googleResult.lng} 
+          name={googleResult.name} 
         />
-      ))}
-
-      <RedPointer lat={40.41} lng={-3.70} name={"Plaza Mayor"} />
+      )}
 
       {zbeData && (
         <GeoJSON
