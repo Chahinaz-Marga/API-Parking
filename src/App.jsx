@@ -18,6 +18,7 @@ function App() {
   const [googleResult, setGoogleResult] = useState(null);   // googleResults es lo que devuelve Google Places 
   const [searchStage, setSearchStage] = useState('parking'); // Controla el flujo de búsqueda
   const [filteredResults, setFilteredResults] = useState([]); // Estado para resultados filtrados
+  const [markers, setMarkers] = useState([]);
 
  
     const handleSearch = (searchQuery) => {

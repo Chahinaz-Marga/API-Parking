@@ -20,9 +20,15 @@ function AdjustMapBounds({ parkings, googleResult }) {
 
   useEffect(() => {
     if (parkings.length > 0) {
-      const bounds = parkings.map((parking) => [parking.location.latitude, parking.location.longitude]);
-      map.fitBounds(bounds); 
-    } else if (googleResult) {
+      const bounds = parkings
+      .filter((parking) => parking.location && typeof parking.location.latitude === 'number' && typeof parking.location.longitude === 'number')
+      .map((parking) => [parking.location.latitude, parking.location.longitude]);
+      
+      if (bounds.length > 0) {
+        map.fitBounds(bounds);
+      }
+       
+    } else if (googleResult  && typeof googleResult.lat === 'number' && typeof googleResult.lng === 'number') {
       map.setView([googleResult.lat, googleResult.lng], 15); // Vista para Google Places
     }
   }, [map, parkings, googleResult]);
