@@ -80,7 +80,7 @@ function MapWithPlaceholder({ parkings, googleResult, onMarkerClick }) {
 
         return (
           <Pointer 
-            key={parking.id}
+            key={parking["id"]}
             lat={lat}
             lng={lng}
             name={parking.title}

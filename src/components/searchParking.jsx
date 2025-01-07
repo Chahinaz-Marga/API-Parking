@@ -82,12 +82,7 @@ function SearchParking({ query, onResults, onMarkersUpdate }) {
       // Actualizar marcadores en el mapa
       const markers = filtered
         .filter((parking) => parking.location && parking.location.latitude && parking.location.longitude) // Filtrar datos válidos
-        .map((parking) => ({
-          id: parking['@id'],
-          lat: parking.location.latitude,
-          lng: parking.location.longitude,
-          color: 'green',
-        }));
+        .map((parking) => parking);
       onMarkersUpdate(markers); // Pasar marcadores al mapa
     } else {
       console.log('Consulta vacía. Limpiando resultados.');
