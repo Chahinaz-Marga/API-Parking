@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import Navbar from './components/navbar';
 import SearchBar from './components/searchBar';
-import SearchParking from './components/searchParking';
 import SearchPlaces from './components/searchPlaces';
 import MapWithPlaceholder from './components/mapPlaceholder';
-import SearchParkingNear from './components/searchParkingNear';
-import { filterParkingsByDistance } from '../src/components/filterParkings';
+import { filterParkingsByDistance } from './components/filterParkings';
 import parkingData from '../public/data/parkingList.json';
-
 
 function App() {
   const [query, setQuery] = useState('');
@@ -28,8 +25,19 @@ function App() {
   };
 
   const handleRadiusChange = (event) => {
-    setSearchRadius(event.target.value);
-    console.log(`Nuevo radio: ${event.target.value} km`);
+    const newRadius = event.target.value;
+    setSearchRadius(newRadius);
+    console.log(`Nuevo radio: ${newRadius} km`);
+    // Si ya tenemos un resultado de Google, actualizamos los parkings filtrados
+    if (googleResult) {
+      const nearbyParkings = filterParkingsByDistance(
+        parkings,
+        googleResult.lat,
+        googleResult.lng,
+        newRadius
+      );
+      setFilteredMarkers(nearbyParkings);
+    }
   };
 
   const handleGoogleResult = (result) => {
@@ -69,10 +77,14 @@ function App() {
           <span>{searchRadius} km</span>
         </div>
         <SearchPlaces query={query} onResult={handleGoogleResult} />
-        <MapWithPlaceholder
-          parkings={filteredMarkers}
-          onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
-        />
+        <div style={{ marginTop: '20px', height: '500px' }}>
+          <MapWithPlaceholder
+            parkings={filteredMarkers}
+            googleResult={googleResult}
+            searchRadius={searchRadius}
+            onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
+          />
+        </div>
       </div>
     </div>
   );
