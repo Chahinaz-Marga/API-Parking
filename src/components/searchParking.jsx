@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapsLink from './googleMapsLink';
 
-function SearchParking({ query, onResults, onMarkersUpdate }) {
+function SearchParking({ query, onResults }) {
   // Estados
   const [parkings, setParkings] = useState([]); // Datos cargados
   const [filteredResults, setFilteredResults] = useState([]); // Resultados filtrados
@@ -83,14 +83,14 @@ function SearchParking({ query, onResults, onMarkersUpdate }) {
       const markers = filtered
         .filter((parking) => parking.location && parking.location.latitude && parking.location.longitude) // Filtrar datos válidos
         .map((parking) => parking);
-      onMarkersUpdate(markers); // Pasar marcadores al mapa
+      
     } else {
       console.log('Consulta vacía. Limpiando resultados.');
       setFilteredResults([]); // Limpiar resultados
       onResults([]); // Limpiar resultados en el padre
-      onMarkersUpdate([]); // Limpiar marcadores
+      
     }
-  }, [query, parkings, onResults, onMarkersUpdate, lastQuery]); // Dependencias
+  }, [query, parkings, onResults, lastQuery]); // Dependencias
 
   // Renderizado del componente
   return (

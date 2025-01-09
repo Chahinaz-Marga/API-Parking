@@ -1,4 +1,6 @@
-export function filterParkingsByDistance(parkings, userLat, userLng, radius) {
+
+
+function FilterParkingsByDistance(parkings, userLat, userLng, radius) {
     const earthRadiusKm = 6371;
   
     return parkings.filter((parking) => {
@@ -6,13 +8,13 @@ export function filterParkingsByDistance(parkings, userLat, userLng, radius) {
       const parkingLng = parking.location.longitude;
   
       // Fórmula de Haversine
-      const dLat = degreesToRadians(parkingLat - userLat);
-      const dLng = degreesToRadians(parkingLng - userLng);
+      const dLat = DegreesToRadians(parkingLat - userLat);
+      const dLng = DegreesToRadians(parkingLng - userLng);
   
       const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(degreesToRadians(userLat)) *
-          Math.cos(degreesToRadians(parkingLat)) *
+        Math.cos(DegreesToRadians(userLat)) *
+          Math.cos(DegreesToRadians(parkingLat)) *
           Math.sin(dLng / 2) *
           Math.sin(dLng / 2);
   
@@ -23,9 +25,9 @@ export function filterParkingsByDistance(parkings, userLat, userLng, radius) {
     });
   }
   
-  function degreesToRadians(degrees) {
+  function DegreesToRadians(degrees) {
     return degrees * (Math.PI / 180);
   }
   
-
+  export default FilterParkingsByDistance;
   

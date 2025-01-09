@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMap, GeoJSON } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, GeoJSON, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import Pointer from './pointer';
 import { useEffect, useState } from 'react';
@@ -38,7 +38,7 @@ function AdjustMapBounds({ parkings, googleResult }) {
 }
 
 
-function MapWithPlaceholder({ parkings, googleResult, onMarkerClick }) {
+function MapWithPlaceholder({ parkings, googleResult, searchRadius, onMarkerClick }) {
   const [zbeData, setZBEData] = useState(null);
   
   useEffect(() => {
@@ -67,6 +67,14 @@ function MapWithPlaceholder({ parkings, googleResult, onMarkerClick }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <AdjustMapBounds parkings={parkings} googleResult={googleResult} />
+
+      {googleResult && googleResult.lat && googleResult.lng && (
+        <Circle
+          center={[googleResult.lat, googleResult.lng]}
+          radius={searchRadius * 1000} // Convertir km a metros
+          pathOptions={{ color: 'green', fillColor: 'green', fillOpacity: 0.2 }}
+        />
+      )}
 
       {parkings.map((parking) => {
         // Validar que 'location', 'latitude' y 'longitude' existan
