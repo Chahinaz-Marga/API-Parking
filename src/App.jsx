@@ -1,87 +1,114 @@
 import React, { useState } from 'react';
 import Navbar from './components/navbar';
 import SearchBar from './components/searchBar';
+import SearchParking from './components/searchParking';
 import SearchPlaces from './components/searchPlaces';
 import MapWithPlaceholder from './components/mapPlaceholder';
-import { filterParkingsByDistance } from './components/filterParkings';
-import parkingData from '../public/data/parkingList.json';
+import SearchParkingNear from './components/searchParkingNear';
+
+const x = import.meta.env.VITE_API_GOOGLE_KEY;
+
+window.initMap = () => {
+  console.log('Google Maps API inicializada correctamente.');
+};
 
 function App() {
   const [query, setQuery] = useState('');
-  const [parkings] = useState(parkingData['@graph']); // Aparcamientos cargados del JSON
-  const [googleResult, setGoogleResult] = useState(null); // Resultado de Google Places
-  const [searchRadius, setSearchRadius] = useState(5); // Radio inicial en km
-  const [filteredMarkers, setFilteredMarkers] = useState([]); // Marcadores filtrados para el mapa
+  const [parkingResults, setParkingResults] = useState([]);  //parkingResults son los datos válidos del json
+  const [googleResult, setGoogleResult] = useState(null);   // googleResults es lo que devuelve Google Places 
+  const [searchStage, setSearchStage] = useState('parking'); // Controla el flujo de búsqueda
+  const [filteredResults, setFilteredResults] = useState([]); // Estado para resultados filtrados
+  const [markers, setMarkers] = useState([]);
 
-  const handleSearch = (searchQuery) => {
-    if (searchQuery.trim()) {
-      console.log('Búsqueda en curso:', searchQuery);
-      setQuery(searchQuery);
-      setGoogleResult(null); // Limpiar resultado previo
-      setFilteredMarkers([]); // Limpiar marcadores previos
-    } else {
-      console.warn('Consulta vacía.');
-    }
-  };
+  console.log (searchStage);
+  
 
-  const handleRadiusChange = (event) => {
-    const newRadius = event.target.value;
-    setSearchRadius(newRadius);
-    console.log(`Nuevo radio: ${newRadius} km`);
-    // Si ya tenemos un resultado de Google, actualizamos los parkings filtrados
-    if (googleResult) {
-      const nearbyParkings = filterParkingsByDistance(
-        parkings,
-        googleResult.lat,
-        googleResult.lng,
-        newRadius
-      );
-      setFilteredMarkers(nearbyParkings);
-    }
-  };
+ 
+    const handleSearch = (searchQuery) => {
+      if (searchQuery.trim()) { 
+        console.log('Actualizando término de búsqueda:', searchQuery); // Depuración
+        setQuery(searchQuery); 
+        setSearchStage('parking'); 
+        setParkingResults([]);
+        setGoogleResult(null);
+        } else {
+        console.warn('Consulta vacía. No se realizará búsqueda.');
+      }
+    };
+
+    const handleResults = (results) => {
+      setFilteredResults(results); // Actualiza el estado
+      console.log('Resultados actualizados en App.jsx:', results); // Depuración
+    };
+
+    // handleParkingResults busca en el jason de parkins y si no hay resultado pasa al Places. 
+    const handleParkingResults = (results) => {
+      console.log('Resultados encontrados en parkingList.json:', results);
+
+      if (results && results.length > 0) {
+        //si hay resultados en el json
+        setParkingResults(results); // Persistir resultados en el estado
+        setSearchStage('parking'); // Mantener búsqueda local
+        console.log('Resultados locales encontrados. Mostrando en mapa.');
+      } else {
+        //si NO hay resultados en json busca en Places
+        console.log('Sin resultados locales. Cambiando a Google Places.');
+        setSearchStage('places'); // Cambia a búsqueda en Google Places
+      }
+    };
+    
+    const handleMarkersUpdate = (markers) => {
+      setParkingResults(markers); // Persistir los marcadores visibles
+    };
+        
+    
 
   const handleGoogleResult = (result) => {
-    if (result) {
-      console.log('Ubicación encontrada:', result);
-      const nearbyParkings = filterParkingsByDistance(
-        parkings,
-        result.lat,
-        result.lng,
-        searchRadius
-      );
-      setFilteredMarkers(nearbyParkings); // Filtrar aparcamientos por distancia
-      console.log('Parkings cercanos:', nearbyParkings);
-    } else {
-      console.warn('No se encontraron resultados en Google Places.');
-    }
-    setGoogleResult(result); // Actualizar la ubicación seleccionada
+    console.log('Resultado de Google Places:', result); // Verificar el estado actualizado
+    setGoogleResult(result);
   };
 
   return (
     <div>
       <Navbar />
-      <div className="container">
-        <h3>Parking Cerca de</h3>
-        <SearchBar onSearch={handleSearch} />
-        <div style={{ margin: '20px 0' }}>
-          <label htmlFor="radiusSlider">Selecciona el rango:</label>
-          <input
-            id="radiusSlider"
-            type="range"
-            min="1"
-            max="8"
-            value={searchRadius}
-            onChange={handleRadiusChange}
-            className="form-range"
-          />
-          <span>{searchRadius} km</span>
+      <SearchBar onSearch={handleSearch} />
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '30%', padding: '10px' }}>
+          {searchStage === 'parking' && (
+            <SearchParking 
+              query={query} 
+              onResults={handleParkingResults} 
+              onMarkersUpdate={handleMarkersUpdate}
+            />
+          )}
+          {searchStage === 'places' && (
+            <SearchPlaces 
+              query={query} 
+              onResult={handleGoogleResult}
+              />
+          )}
         </div>
-        <SearchPlaces query={query} onResult={handleGoogleResult} />
-        <div style={{ marginTop: '20px', height: '500px' }}>
-          <MapWithPlaceholder
-            parkings={filteredMarkers}
+
+        <div>
+
+        {searchStage === 'places' && (
+            <SearchPlaces 
+              query={query} 
+              onResult={handleGoogleResult}
+              />
+          )} 
+
+          <SearchParkingNear
             googleResult={googleResult}
-            searchRadius={searchRadius}
+            parkings={filteredResults}
+            onMarkersUpdate={(markers) => setMarkers(markers)}
+           />
+        </div>
+
+        <div style={{ width: '70%', height: '500px' }}>
+          <MapWithPlaceholder
+            parkings={parkingResults}
+            googleResult={googleResult}
             onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
           />
         </div>

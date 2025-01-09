@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 function SearchPlaces({ query, onResult }) {
   const [service, setService] = useState(null);
   const [error, setError] = useState(null);
+  const hasSearched = useRef(false); // Usamos una ref para evitar bucles
 
+  console.log('Búsqueda en Google Places activada con query:', query);
+
+  // Inicializar Google Places API
   useEffect(() => {
     const loadService = () => {
       if (window.google && window.google.maps && window.google.maps.places) {
+        console.log('Google Places API cargada correctamente.');
         const map = new window.google.maps.Map(document.createElement('div'));
         setService(new window.google.maps.places.PlacesService(map));
       } else {
@@ -15,10 +20,17 @@ function SearchPlaces({ query, onResult }) {
       }
     };
     loadService();
-  }, []);
+  }, []); // Solo se ejecuta una vez al cargar el componente
 
+  // Efecto para realizar la búsqueda
   useEffect(() => {
-    if (!service || !query.trim()) return;
+    // Verifica si ya se ha buscado o si el query está vacío
+    if (!service || !query.trim() || hasSearched.current) {
+      console.log('Búsqueda bloqueada. Ya se ha realizado o el query está vacío.');
+      return;
+    }
+
+    console.log('Búsqueda válida enviada:', query); // Depuración
 
     const request = {
       query,
@@ -33,16 +45,26 @@ function SearchPlaces({ query, onResult }) {
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
         };
-        onResult(result); // Enviar el resultado
+        console.log('Resultado enviado:', result); // Depuración
+        onResult(result);
+        console.log (result);
+
+        // Marcar búsqueda como realizada
+        hasSearched.current = true; // Cambiamos el estado solo aquí
       } else {
-        console.warn('No se encontraron lugares para la búsqueda:', query);
-        setError('No se encontraron lugares.');
+        console.error('No se encontraron lugares en Google Places.');
         onResult(null);
+        setError('No se encontraron lugares.');
       }
     });
-  }, [query, service]);
+  }, [query, service]); // Ahora solo depende del query inicial y el servicio (NO de estados reactivos)
 
-  return error ? <p style={{ color: 'red' }}>{error}</p> : null;
+  return (
+    <div>
+      
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
+  );
 }
 
 export default SearchPlaces;
