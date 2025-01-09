@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Navbar from './components/navbar';
 import SearchBar from './components/searchBar';
 import SearchParking from './components/searchParking';
 import SearchPlaces from './components/searchPlaces';
 import MapWithPlaceholder from './components/mapPlaceholder';
-import FilterParkingsByDistance from './components/filterParkings';
 import parkingData from '../public/data/parkingList.json';
+import FilterParkingsNear from './components/filterParkings';
 
 
 
@@ -65,17 +65,6 @@ function App() {
   
     if (result && typeof result.lat === 'number' && typeof result.lng === 'number') {
       console.log('Ubicación encontrada:', result);
-      
-      //busca los parkings cercanos 
-      const nearbyParkings = FilterParkingsByDistance(
-        parkings,
-        result.lat,
-        result.lng,
-        searchRadius
-      );
-  
-      setFilteredMarkers(nearbyParkings); // Filtrar aparcamientos por distancia
-      console.log('Parkings cercanos:', nearbyParkings);
     } else {
       console.warn('No se encontraron resultados en Google Places o las coordenadas no son válidas.');
       setFilteredMarkers([]); // Limpia los resultados si no hay un resultado válido
@@ -84,6 +73,14 @@ function App() {
     setGoogleResult(result);
   };
    console.log(googleResult);
+
+  //recupera los parkings cernanos al sitio de places
+  const handleFilteredParkings = useCallback((filtered) => {
+    console.log('Parkings filtrados recibidos desde FilterParkingsNear:', filtered);
+    setFilteredMarkers(filtered); // Actualiza el estado de parkings en App
+  }, []);
+
+  console.log('Parkings filtrados recibidos:', filteredMarkers);
 
   return (
     <div>
@@ -111,6 +108,14 @@ function App() {
                 query={query} 
                 onResult={handleGoogleResult}
                 />
+          )}
+
+          {searchStage === 'places' && googleResult && googleResult.lat && googleResult.lng && (
+            <FilterParkingsNear
+              center={ {lat : googleResult.lat, lng : googleResult.lng} }
+              radius={searchRadius}
+              onFilter={handleFilteredParkings}
+              />
           )}
           
           {searchStage === 'places' && (

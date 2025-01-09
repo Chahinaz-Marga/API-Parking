@@ -23,9 +23,11 @@ function SearchPlaces({ query, onResult }) {
   }, []); // Solo se ejecuta una vez al cargar el componente
 
   // Efecto para realizar la búsqueda
+  const normalizedQuery = query.trim().toLowerCase();
+
   useEffect(() => {
     // Verifica si ya se ha buscado o si el query está vacío
-    if (!service || !query.trim() || hasSearched.current) {
+    if (!service || !normalizedQuery || hasSearched.current) {
       console.log('Búsqueda bloqueada. Ya se ha realizado o el query está vacío.');
       return;
     }
@@ -57,7 +59,9 @@ function SearchPlaces({ query, onResult }) {
         setError('No se encontraron lugares.');
       }
     });
-  }, [query, service]); // Ahora solo depende del query inicial y el servicio (NO de estados reactivos)
+  }, [normalizedQuery, service]); // Ahora solo depende del query inicial y el servicio (NO de estados reactivos)
+
+  console.log('Query normalizado:', normalizedQuery);
 
   return (
     <div>
