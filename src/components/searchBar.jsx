@@ -1,7 +1,6 @@
 import { HeatmapLayer } from '@react-google-maps/api';
 import React, { useState } from 'react';
 import Toggle from 'react-toggle';
-import { ReactComponent as ClockIcon } from './clock.svg'
 
 function SearchBar({ onSearch, onToggle24Hours }) {
   const [query, setQuery] = useState('');
@@ -38,10 +37,7 @@ function SearchBar({ onSearch, onToggle24Hours }) {
         <label className="d-flex align-items-center">
           <Toggle
             defaultChecked={filter24Hours}
-            icons={{
-              checked: <ClockIcon style={{ width: '16px', height: '16px' }} />,
-              unchecked: null,
-            }}
+            icons={false} // Sin imágenes en el toggle
             onChange={handleToggle}
           />
           <span style={{ marginLeft: '8px' }}>Sólo 24 horas</span>

@@ -49,3 +49,12 @@
     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
     background-color: #b7d7f7; 
   }
+
+  .list-group-item {
+    margin-bottom: 5px !important; /* Espacio entre las cartas */
+    border-radius: 8px; /* Redondear los bordes */
+    border: 1px solid #ddd; /* Borde ligero */
+    background-color: #fff; /* Fondo blanco */
+    padding: 10px; /* Añade un relleno interno */
+  }
+  
