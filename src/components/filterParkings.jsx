@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-function FilterParkingsNear({ center, radius, onFilter }) {
+function FilterParkingsNear({ center, radius, onFilter, is24HoursFilter }) {
   const [parkings, setParkings] = useState([]); // Estado para almacenar los parkings
   const [filteredParkings, setFilteredParkings] = useState([]); // Estado para almacenar parkings filtrados
   const earthRadiusKm = 6371;
@@ -25,9 +25,14 @@ function FilterParkingsNear({ center, radius, onFilter }) {
       const filtered = parkings.filter((parking) => {
         const parkingLat = parking.location?.latitude;
         const parkingLng = parking.location?.longitude;
-
+        const is24Hours = parking.organization.schedule?.includes('24 horas');
+      
         if (!parkingLat || !parkingLng) {
           return false; // Excluir parkings sin coordenadas válidas
+        }
+
+        if (is24HoursFilter && !is24Hours) {
+          return false; // Excluir parkings que no son 24 horas cuando el filtro está activado
         }
 
         const dLat = DegreesToRadians(parkingLat - center.lat);

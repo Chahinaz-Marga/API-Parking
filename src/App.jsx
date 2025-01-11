@@ -22,12 +22,17 @@ function App() {
   const [searchStage, setSearchStage] = useState('parking'); // busca en parkings o en Places
   const [filteredMarkers, setFilteredMarkers] = useState([]); // parkings a menos dist del Place
   const [parkings] = useState(parkingData['@graph']); // Todos los parkings del JSON
-  const searchRadius = 2;
+  const [is24HoursFilter, setIs24HoursFilter] = useState(false);
+  const [searchRadius, setSearchRadius] = useState(2);
 
   console.log (searchStage);
   
+  const handleRadiusChange = (event) => {
+    const newRadius = Number(event.target.value); // Convertimos el valor del input a un número
+    setSearchRadius(newRadius); // Actualizamos el estado del rango
+    console.log(`Nuevo rango seleccionado: ${newRadius} km`);
+  };
 
- 
   const handleSearch = (searchQuery) => {
     if (searchQuery.trim()) { 
       console.log('Actualizando término de búsqueda:', searchQuery); // inicia con los estados vacíos y buscando en parkings
@@ -41,6 +46,9 @@ function App() {
     }
   };
 
+  const handleToggle24Hours = (isActive) => {
+    setIs24HoursFilter(isActive);
+  };
   
 
   // busca en el jason de parkins y si no hay resultado pasa al Places. 
@@ -83,45 +91,85 @@ function App() {
   console.log('Parkings filtrados recibidos:', filteredMarkers);
 
   return (
-    <div>
+    <div id="root">
       <Navbar />
-      <SearchBar onSearch={handleSearch} />
-      <div style={{ display: 'flex' }}>
-        <div style={{ width: '30%', padding: '10px' }}>
+      <div className = "search-container">
+        <SearchBar 
+          onSearch={handleSearch} 
+          onToggle24Hours={handleToggle24Hours}
+        />
+      </div>
+      <div style={{ margin: '5px 20px', position: 'relative' }}>
+  <label htmlFor="radiusSlider">Selecciona el rango:</label>
+  <div style={{ position: 'relative', width: '100%', marginTop: '20px' }}>
+    <input
+      id="radiusSlider"
+      type="range"
+      min="0.5"
+      max="10"
+      step="0.5"
+      value={searchRadius}
+      onChange={handleRadiusChange}
+      className="form-range"
+      style={{ width: '100%' }}
+    />
+    {/* Span para mostrar el valor */}
+    <span
+      style={{
+        position: 'absolute',
+        top: '-20px', // Ajusta la altura para colocar el texto debajo del deslizador
+        left: `${((searchRadius - 0.5) / 9.5) * 100}%`, // Calcula la posición en función del valor
+        transform: 'translateX(-50%)', // Centra el texto
+        background: 'white', // Fondo blanco para mayor claridad
+        padding: '2px 5px',
+        borderRadius: '4px',
+        fontSize: '12px',
+        boxShadow: '0px 1px 3px rgba(0,0,0,0.2)',
+      }}
+    >
+      {searchRadius} km
+    </span>
+  </div>
+</div>
+
+      <div className = "main-content">
+        <div className = "results">
           {searchStage === 'parking' && (
-            <SearchParking 
-              query={query} 
-              onResults={handleParkingResults}
-            />
+              <SearchParking 
+                query={query} 
+                onResults={handleParkingResults}
+                is24HoursFilter={is24HoursFilter}
+              />
           )}
-          {searchStage === 'parking' && (
-            <MapWithPlaceholder
-              parkings={parkingResults}
-              googleResult={googleResult}
-              onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
-            />
-          )}
-        </div>
-        <div>
           {searchStage === 'places' && (
               <SearchPlaces 
                 query={query} 
                 onResult={handleGoogleResult}
                 />
           )}
-
           {searchStage === 'places' && googleResult && googleResult.lat && googleResult.lng && (
             <FilterParkingsNear
               center={ {lat : googleResult.lat, lng : googleResult.lng} }
               radius={searchRadius}
               onFilter={handleFilteredParkings}
+              is24HoursFilter={is24HoursFilter}
               />
+          )}          
+        </div>
+        <div className = "map-container">
+        {searchStage === 'parking' && (
+            <MapWithPlaceholder
+              parkings={parkingResults}
+              googleResult={googleResult}
+              searchRadius={searchRadius}
+              onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
+            />
           )}
-          
           {searchStage === 'places' && (
             <MapWithPlaceholder
-              parkings={filteredMarkers}
+              parkings={searchStage === 'parking' ? parkingResults : filteredMarkers}
               googleResult={googleResult}
+              searchStage={searchStage} // Nuevo prop
               searchRadius={searchRadius}
               onMarkerClick={(parking) => alert(`Seleccionaste: ${parking.title}`)}
             />

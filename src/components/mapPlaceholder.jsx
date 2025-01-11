@@ -15,11 +15,11 @@ function MapPlaceholder() {
   );
 }
 
-function AdjustMapBounds({ parkings, googleResult }) {
+function AdjustMapBounds({ parkings, googleResult, searchStage }) {
   const map = useMap();
 
   useEffect(() => {
-    if (parkings.length > 0) {
+    if (searchStage === 'parking' && parkings.length > 0) {
       const bounds = parkings
       .filter((parking) => parking.location && typeof parking.location.latitude === 'number' && typeof parking.location.longitude === 'number')
       .map((parking) => [parking.location.latitude, parking.location.longitude]);
@@ -28,17 +28,33 @@ function AdjustMapBounds({ parkings, googleResult }) {
         map.fitBounds(bounds);
       }
        
-    } else if (googleResult  && typeof googleResult.lat === 'number' && typeof googleResult.lng === 'number') {
-      map.setView([googleResult.lat, googleResult.lng], 15); // Vista para Google Places
+    } else if (searchStage === 'places' && googleResult) {
+       // Calcular límites para Google Places y parkings cercanos
+       const parkingBounds = parkings
+       .filter((parking) => parking.location && parking.location.latitude && parking.location.longitude)
+       .map((parking) => [parking.location.latitude, parking.location.longitude]);
+
+     const allBounds = [
+       [googleResult.lat, googleResult.lng], // Coordenadas de Google Places
+       ...parkingBounds, // Coordenadas de parkings cercanos
+     ];
+
+     if (allBounds.length > 1) {
+       // Ajustar el mapa para incluir todos los puntos
+       map.fitBounds(allBounds, { padding: [50, 50] });
+     } else if (allBounds.length === 1) {
+       // Solo Google Places, sin parkings
+       map.setView([googleResult.lat, googleResult.lng], 15);
+     }
     }
-  }, [map, parkings, googleResult]);
+  }, [map, parkings, googleResult, searchStage]);
   
   
   return null;
 }
 
 
-function MapWithPlaceholder({ parkings, googleResult, searchRadius, onMarkerClick }) {
+function MapWithPlaceholder({ parkings, googleResult, searchStage, searchRadius, onMarkerClick }) {
   const [zbeData, setZBEData] = useState(null);
   
   useEffect(() => {
@@ -66,7 +82,11 @@ function MapWithPlaceholder({ parkings, googleResult, searchRadius, onMarkerClic
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <AdjustMapBounds parkings={parkings} googleResult={googleResult} />
+      <AdjustMapBounds 
+        parkings={parkings} 
+        googleResult={googleResult}
+        searchStage={searchStage}
+      />
 
       {googleResult && googleResult.lat && googleResult.lng && (
         <Circle

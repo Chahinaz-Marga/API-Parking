@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import GoogleMapsLink from './googleMapsLink';
 
-function SearchParking({ query, onResults }) {
+function SearchParking({ query, onResults, is24HoursFilter }) {
   // Estados
   const [parkings, setParkings] = useState([]); // Datos cargados
   const [filteredResults, setFilteredResults] = useState([]); // Resultados filtrados
@@ -59,11 +59,11 @@ function SearchParking({ query, onResults }) {
         const districtId = parking.address?.district?.['@id'] || '';
         const districtName = normalizeText(districtId.split('/').pop()) || '';
 
-        //console.log(`Comparando:
-        //  Título: ${title}, 
-        //  Dirección: ${address}, 
-        //  Distrito: ${districtName}`
-        //);
+        // Aplicar filtro de horario 24 horas si está activado
+        const is24Hours = parking.organization.schedule?.includes('24 horas');
+        if (is24HoursFilter && !is24Hours) {
+          return false; // Excluir si no cumple con el horario de 24 horas
+        }
 
         // Verificar coincidencias parciales en los campos
         return (
@@ -90,7 +90,7 @@ function SearchParking({ query, onResults }) {
       onResults([]); // Limpiar resultados en el padre
       
     }
-  }, [query, parkings, onResults, lastQuery]); // Dependencias
+  }, [query, parkings, onResults, lastQuery, is24HoursFilter]); // Dependencias
 
   // Renderizado del componente
   return (

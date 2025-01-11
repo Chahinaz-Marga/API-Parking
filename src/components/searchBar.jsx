@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch, onToggle24Hours }) {
   const [query, setQuery] = useState('');
+  const [filter24Hours, setFilter24Hours] = useState(false);
+
 
   //actualiza el estado cuando cambia el texto
   const handleInputChange = (event) => { 
@@ -23,19 +25,39 @@ function SearchBar({ onSearch }) {
     }
   };
 
+  const handleToggle = () => {
+    setFilter24Hours(!filter24Hours);
+    onToggle24Hours(!filter24Hours);
+  };
+
   return (
-    <div className="mb-4">
+    <div className="search-container">
+      <div className="d-flex align-items-center">
+        <input
+          type="checkbox"
+          className="form-check-input"
+          id="filter24Hours"
+          checked={filter24Hours}
+          onChange={handleToggle}
+          style={{ marginRight: '5px' }}
+        />
+        <label className="form-check-label" htmlFor="filter24Hours">
+          Sólo 24 horas
+        </label>
+      </div>
+      <button onClick={handleSearch} className="btn btn-primary mx-2">
+        Buscar
+      </button>
       <input
         type="text"
         value={query}
-        className="form-control"
+        className="form-control flex-grow-1"
         placeholder="Buscar aparcamientos por nombre o distrito..."
         onChange={handleInputChange}
         onKeyDown={handleKeyDown} // Detecta la tecla Enter
       />
-      <button onClick={handleSearch} className="btn btn-primary mt-2">
-        Buscar
-      </button>
+      
+      
     </div>
   );
 }

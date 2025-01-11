@@ -1,9 +1,50 @@
 #root {
     height: 100vh; /*altura de la pantalla de visualización*/
+    display: flex;
+    flex-direction: column;
+  }
+
+  .navbar {
+    flex-shrink: 0; /* La barra de navegación no cambia de tamaño */
+  }
+
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    background-color: #b7d7f7;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden; /* Evita que el contenido desborde */
+  }
+  
+  .results {
+    width: 30%;
+    padding: 10px;
+    overflow-y: auto; /* Habilita el scroll en la lista de resultados */
+    background-color: #f8f9fa;
+    border-right: 1px solid #ddd;
+  }
+  
+  .map-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   .leaflet-container {
-    width: 800px;
-    height: 400px; /* Cambia este valor según tus necesidades */
+    width: 100%; /* Ocupa toda la zona derecha */
+    height: 100%; /* Ajusta el mapa a la mitad de la pantalla */
   }
-  
+
+  .form-check-label {
+    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    
+  }
