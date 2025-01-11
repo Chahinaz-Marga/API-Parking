@@ -23,7 +23,7 @@ function App() {
   const [filteredMarkers, setFilteredMarkers] = useState([]); // parkings a menos dist del Place
   const [parkings] = useState(parkingData['@graph']); // Todos los parkings del JSON
   const [is24HoursFilter, setIs24HoursFilter] = useState(false);
-  const [searchRadius, setSearchRadius] = useState(2);
+  const [searchRadius, setSearchRadius] = useState(1);
 
   console.log (searchStage);
   
@@ -93,44 +93,46 @@ function App() {
   return (
     <div id="root">
       <Navbar />
-      <div className = "search-container">
+      <div className = "contariner-fluid search-container">
         <SearchBar 
           onSearch={handleSearch} 
           onToggle24Hours={handleToggle24Hours}
         />
       </div>
-      <div style={{ margin: '5px 20px', position: 'relative' }}>
-  <label htmlFor="radiusSlider">Selecciona el rango:</label>
-  <div style={{ position: 'relative', width: '100%', marginTop: '20px' }}>
-    <input
-      id="radiusSlider"
-      type="range"
-      min="0.5"
-      max="10"
-      step="0.5"
-      value={searchRadius}
-      onChange={handleRadiusChange}
-      className="form-range"
-      style={{ width: '100%' }}
-    />
-    {/* Span para mostrar el valor */}
-    <span
-      style={{
-        position: 'absolute',
-        top: '-20px', // Ajusta la altura para colocar el texto debajo del deslizador
-        left: `${((searchRadius - 0.5) / 9.5) * 100}%`, // Calcula la posición en función del valor
-        transform: 'translateX(-50%)', // Centra el texto
-        background: 'white', // Fondo blanco para mayor claridad
-        padding: '2px 5px',
-        borderRadius: '4px',
-        fontSize: '12px',
-        boxShadow: '0px 1px 3px rgba(0,0,0,0.2)',
-      }}
-    >
-      {searchRadius} km
-    </span>
-  </div>
-</div>
+
+      {searchStage === 'places' && googleResult && (
+        <div style={{ margin: '5px 20px', position: 'relative' }}>
+          <label htmlFor="radiusSlider">Selecciona el rango:</label>
+          <div style={{ position: 'relative', width: '100%', marginTop: '20px' }}>
+            <input
+              id="radiusSlider"
+              type="range"
+              min="0.5"
+              max="10"
+              step="0.5"
+              value={searchRadius}
+              onChange={handleRadiusChange}
+              className="form-range"
+              style={{ width: '100%' }}
+            />
+            <span
+              style={{
+                position: 'absolute',
+                top: '-20px',
+                left: `${((searchRadius - 0.5) / 9.5) * 100}%`,
+                transform: 'translateX(-50%)',
+                background: 'white',
+                padding: '2px 5px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                boxShadow: '0px 1px 3px rgba(0,0,0,0.2)',
+              }}
+            >
+              {searchRadius} km
+            </span>
+          </div>
+        </div>
+      )}
 
       <div className = "main-content">
         <div className = "results">

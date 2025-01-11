@@ -15,7 +15,8 @@ function MapPlaceholder() {
   );
 }
 
-function AdjustMapBounds({ parkings, googleResult, searchStage }) {
+//esta función ajusta el mapa a los resultados de parkins o de places
+function AdjustMapBounds({ parkings, googleResult, searchStage }) { 
   const map = useMap();
 
   useEffect(() => {
@@ -29,21 +30,18 @@ function AdjustMapBounds({ parkings, googleResult, searchStage }) {
       }
        
     } else if (searchStage === 'places' && googleResult) {
-       // Calcular límites para Google Places y parkings cercanos
        const parkingBounds = parkings
        .filter((parking) => parking.location && parking.location.latitude && parking.location.longitude)
        .map((parking) => [parking.location.latitude, parking.location.longitude]);
 
      const allBounds = [
-       [googleResult.lat, googleResult.lng], // Coordenadas de Google Places
-       ...parkingBounds, // Coordenadas de parkings cercanos
+       [googleResult.lat, googleResult.lng], 
+       ...parkingBounds, 
      ];
 
      if (allBounds.length > 1) {
-       // Ajustar el mapa para incluir todos los puntos
        map.fitBounds(allBounds, { padding: [50, 50] });
      } else if (allBounds.length === 1) {
-       // Solo Google Places, sin parkings
        map.setView([googleResult.lat, googleResult.lng], 15);
      }
     }
@@ -97,7 +95,6 @@ function MapWithPlaceholder({ parkings, googleResult, searchStage, searchRadius,
       )}
 
       {parkings.map((parking) => {
-        // Validar que 'location', 'latitude' y 'longitude' existan
         const lat = parking.location?.latitude; 
         const lng = parking.location?.longitude;
 

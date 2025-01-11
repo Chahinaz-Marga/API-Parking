@@ -5,10 +5,9 @@ function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
-        {/* Logo a la izquierda */}
+       
         <Link className="navbar-brand" to="/">API Parking</Link>
 
-        {/* Botón para colapsar en pantallas pequeñas */}
         <button
           className="navbar-toggler"
           type="button"
@@ -21,9 +20,8 @@ function Navbar() {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Menú colapsable */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto"> {/* `ms-auto` empuja los enlaces a la derecha */}
+          <ul className="navbar-nav ms-auto"> 
             <li className="nav-item">
               <Link className="nav-link" to="/">Inicio</Link>
             </li>

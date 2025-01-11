@@ -2,20 +2,19 @@ import React, { useState, useEffect } from 'react';
 import GoogleMapsLink from './googleMapsLink';
 
 function SearchParking({ query, onResults, is24HoursFilter }) {
-  // Estados
-  const [parkings, setParkings] = useState([]); // Datos cargados
-  const [filteredResults, setFilteredResults] = useState([]); // Resultados filtrados
-  const [error, setError] = useState(null); // Estado de error
+  const [parkings, setParkings] = useState([]); // donde se cargan los parkings de la lista
+  const [filteredResults, setFilteredResults] = useState([]); 
+  const [error, setError] = useState(null); 
   const [lastQuery, setLastQuery] = useState(''); // Última consulta para evitar repetición
 
   // Cargar datos del archivo JSON al iniciar
   useEffect(() => {
     const loadParkings = async () => {
       try {
-        const response = await fetch('/data/parkingList.json'); // Ruta al archivo JSON
+        const response = await fetch('/data/parkingList.json'); 
         const data = await response.json();
 
-        console.log('Datos cargados desde JSON:', data['@graph']); // Depuración
+        console.log('Datos cargados desde JSON:', data['@graph']); 
         setParkings(data['@graph']); // Guardar datos cargados
       } catch (err) {
         setError('Error cargando el archivo parkingList.json');
@@ -32,7 +31,7 @@ function SearchParking({ query, onResults, is24HoursFilter }) {
     if (query.trim() === lastQuery.trim()) return; // Salta si es la misma consulta
     setLastQuery(query); // Actualizar última consulta
 
-    console.log('Query ingresada:', query); // Depuración
+    console.log('Query ingresada:', query); 
 
     // Si hay consulta
     if (query.trim()) {
@@ -47,7 +46,6 @@ function SearchParking({ query, onResults, is24HoursFilter }) {
 
       // Filtrar resultados
       const filtered = parkings.filter((parking) => {
-        // Verificar que las coordenadas existan
         if (!parking.location || !parking.location.latitude || !parking.location.longitude) {
           console.warn('Parking sin ubicación válida:', parking);
           return false;
@@ -59,13 +57,12 @@ function SearchParking({ query, onResults, is24HoursFilter }) {
         const districtId = parking.address?.district?.['@id'] || '';
         const districtName = normalizeText(districtId.split('/').pop()) || '';
 
-        // Aplicar filtro de horario 24 horas si está activado
+        // filtro de horario 24 horas si está activado
         const is24Hours = parking.organization.schedule?.includes('24 horas');
         if (is24HoursFilter && !is24Hours) {
-          return false; // Excluir si no cumple con el horario de 24 horas
+          return false; 
         }
-
-        // Verificar coincidencias parciales en los campos
+        
         return (
           title.includes(normalizeText(query)) || 
           address.includes(normalizeText(query)) || 
@@ -73,45 +70,47 @@ function SearchParking({ query, onResults, is24HoursFilter }) {
         );
       });
 
-      console.log('Resultados filtrados:', filtered); // Depuración de resultados
+      console.log('Resultados filtrados:', filtered); 
 
       // Actualizar resultados
       setFilteredResults(filtered);
-      onResults(filtered); // Pasar resultados al componente padre
+      onResults(filtered); // pasa
 
-      // Actualizar marcadores en el mapa
+      // marcadores en el mapa
       const markers = filtered
         .filter((parking) => parking.location && parking.location.latitude && parking.location.longitude) // Filtrar datos válidos
         .map((parking) => parking);
       
     } else {
       console.log('Consulta vacía. Limpiando resultados.');
-      setFilteredResults([]); // Limpiar resultados
-      onResults([]); // Limpiar resultados en el padre
+      setFilteredResults([]); 
+      onResults([]); 
       
     }
-  }, [query, parkings, onResults, lastQuery, is24HoursFilter]); // Dependencias
+  }, [query, parkings, onResults, lastQuery, is24HoursFilter]); 
 
-  // Renderizado del componente
+  
   return (
     <div>
       <h2>Listado de aparcamientos</h2>
-      {/* Mostrar errores si ocurren */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-
-      {/* Mostrar resultados */}
+      
       {filteredResults.length === 0 ? (
         <p>No se encontraron resultados.</p>
       ) : (
         <ul className="list-group">
           {filteredResults.map((parking) => (
-            <li key={parking['@id']} className="list-group-item">
-              <strong>{parking.title}</strong>
-              <p>Dirección: {parking.address['street-address']}</p>
-              <p>Distrito: {parking.address.district['@id'].split('/').pop()}</p>
-              <p>Horario: {parking.organization.schedule || 'No disponible'}</p>
-              <GoogleMapsLink address={parking.address['street-address']} />
-            </li>
+              <li key={parking['@id']} className="list-group-item">
+              <div className="d-flex justify-content-between align-items-center">
+                <strong>{parking.title}</strong>
+                <GoogleMapsLink address={parking.address['street-address']} />
+              </div>
+              <div style={{ marginTop: '5px', marginLeft: '15px', fontSize: '0.9em', color: '#555' }}> 
+                  <p className="mb-1"><strong>Dirección:</strong> {parking.address['street-address']}</p>
+                  <p className="mb-1"><strong>Distrito:</strong> {parking.address.district['@id'].split('/').pop()}</p>
+                  <p className="mb-1"><strong>Horario:</strong> {parking.organization.schedule || 'No disponible'}</p>
+                </div>                
+              </li>
           ))}
         </ul>
       )}

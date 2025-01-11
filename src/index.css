@@ -13,10 +13,11 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: 10px;
-    background-color: #b7d7f7;
-    border-bottom: 1px solid #ddd;
+    margin-left: 0.3rem
+      
   }
+
+  
 
   .main-content {
     flex: 1;
@@ -25,7 +26,7 @@
   }
   
   .results {
-    width: 30%;
+    width: 50%;
     padding: 10px;
     overflow-y: auto; /* Habilita el scroll en la lista de resultados */
     background-color: #f8f9fa;
@@ -46,5 +47,5 @@
 
   .form-check-label {
     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
-    
+    background-color: #b7d7f7; 
   }

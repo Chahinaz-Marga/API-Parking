@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.css';
 import 'leaflet.awesome-markers/dist/leaflet.awesome-markers.js';
 
-// Icono rojo personalizado
+// Icono rojo chulo
 const redIcon = new L.AwesomeMarkers.icon({
   icon: 'home',        
   markerColor: 'red',   
@@ -19,7 +19,7 @@ function RedPointer({ lat, lng, name }) {
   return (
     <Marker
       position={position}
-      icon={redIcon} // Aplicamos el icono rojo personalizado
+      icon={redIcon} 
       ref={markerRef}
     >
       <Tooltip>
