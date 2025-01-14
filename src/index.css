@@ -8,6 +8,16 @@
     flex-shrink: 0; /* La barra de navegación no cambia de tamaño */
   }
 
+  .custom-jumbotron {
+    background-image: url('../public/images/jumbotron.jpg');
+    background-size: cover;
+    background-position: center;
+    color: navy;
+    text-align: center;
+    font-weight: 800;
+    font-family: 'Poppins', sans-serif;
+}
+
   .search-container {
     display: flex;
     align-items: center;

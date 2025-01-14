@@ -93,12 +93,22 @@ function App() {
   return (
     <div id="root">
       <Navbar />
+
+      <div class="jumbotron custom-jumbotron text-center">
+          <div class="container">
+              <h1 class="display-4">¡Encuentra tu parking!</h1>
+              <p class="lead">Aparca fácilmente cerca del teatro o donde quiera que vayas.</p>
+          </div>
+      </div>
+
       <div className = "contariner-fluid search-container">
         <SearchBar 
           onSearch={handleSearch} 
           onToggle24Hours={handleToggle24Hours}
         />
       </div>
+
+      
 
       {searchStage === 'places' && googleResult && (
         <div style={{ margin: '5px 20px', position: 'relative' }}>
