@@ -32,25 +32,41 @@ function SearchBar({ onSearch, onToggle24Hours }) {
   };
 
   return (
-    <div className="search-container">
-      <div className="d-flex align-items-center">
-        <label className="d-flex align-items-center">
-          <Toggle
-            defaultChecked={filter24Hours}
-            icons={false} // Sin imágenes en el toggle
-            onChange={handleToggle}
-          />
-          <span style={{ marginLeft: '8px' }}>Sólo 24 horas</span>
+    <div className="search-container d-flex align-items-center">
+      {/* Toggle de Bootstrap */}
+      <div className="form-check form-switch position-relative" style={{ width: '100px', height: '40px' }}>
+        <input
+          className="form-check-input"
+          type="checkbox"
+          role="switch"
+          id="toggle24Hours"
+          onChange={handleToggle}
+          style={{
+            width: '100px',
+            height: '40px',
+            padding: '0',
+          }}
+        />
+        <label
+          className="form-check-label position-absolute top-50 start-50 translate-middle fw-bold"
+          htmlFor="toggle24Hours"
+          style={{
+            color: '#fff',
+            zIndex: 2,
+            pointerEvents: 'none',
+          }}
+        >
+          24h
         </label>
       </div>
-       
+
       <button onClick={handleSearch} className="btn btn-primary mx-2">
         Buscar
       </button>
       <input
         type="text"
         value={query}
-        className="form-control flex-grow-1"
+        className="form-control me-3"
         placeholder="Buscar aparcamientos por nombre o distrito..."
         onChange={handleInputChange}
         onKeyDown={handleKeyDown} // Enter

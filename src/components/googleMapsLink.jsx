@@ -10,8 +10,8 @@ function GoogleMapsLink ({ address }) {
 
     return (
         <div>
-            <button onClick={openGoogleMaps}>
-            Ruta
+            <button onClick={openGoogleMaps} className="btn btn-link">
+            <i className="bi bi-pin-map-fill" style={{ fontSize: '1.2rem' }}></i>
             </button>
         </div>
     );
