@@ -32,9 +32,9 @@ function SearchBar({ onSearch, onToggle24Hours }) {
   };
 
   return (
-    <div className="search-container d-flex align-items-center">
+    <div className="search-container d-flex align-items-center mb-1">
       {/* Toggle de Bootstrap */}
-      <div className="form-check form-switch position-relative" style={{ width: '100px', height: '40px' }}>
+      <div className="form-check form-switch position-relative" style={{ width: '100px', height: '40px', marginLeft: '0' }}>
         <input
           className="form-check-input"
           type="checkbox"
@@ -51,9 +51,10 @@ function SearchBar({ onSearch, onToggle24Hours }) {
           className="form-check-label position-absolute top-50 start-50 translate-middle fw-bold"
           htmlFor="toggle24Hours"
           style={{
-            color: '#fff',
+            color: '#001f3f', 
             zIndex: 2,
             pointerEvents: 'none',
+            textShadow: 'none', 
           }}
         >
           24h
@@ -66,12 +67,11 @@ function SearchBar({ onSearch, onToggle24Hours }) {
       <input
         type="text"
         value={query}
-        className="form-control me-3"
+        className="form-control me-1"
         placeholder="Buscar aparcamientos por nombre o distrito..."
         onChange={handleInputChange}
         onKeyDown={handleKeyDown} // Enter
       />
-      
       
     </div>
   );

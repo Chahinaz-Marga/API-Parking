@@ -70,5 +70,19 @@
   
 
 
+/* Quita cualquier sombreado de texto */
+.form-check-label {
+  text-shadow: none !important; /* Asegura que no haya sombras */
+  background: none !important; /* Elimina fondos residuales */
+  box-shadow: none !important; /* Evita cualquier sombra adicional */
+  margin: 0; 
+}
+
+/* Evita sombras por foco o hover */
+.form-check-input:focus + .form-check-label {
+  text-shadow: none;
+  background: none;
+  box-shadow: none;
+}
 
   
